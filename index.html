@@ -59,45 +59,73 @@
 		.scale(yScale)
 		.orient("left");
 
+	//矩形之间的空白
 	var rectPadding = 4;
+
+	//添加矩形元素
 	var rects = svg.selectAll(".MyRect")
 		.data(dataset)
 		.enter()
 		.append("rect")
 		.attr("class","MyRect")
-		.attr("transform","translate(" + padding.left + "," + padding.top+ ")")
-		.attr("x",function(d,i){
+		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
+		.attr("x", function(d,i){
 			return xScale(i) + rectPadding/2;
+		} )
+		.attr("width", xScale.rangeBand() - rectPadding )
+		.attr("y",function(d){
+			var min = yScale.domain()[0];
+			return yScale(min);
 		})
-		.attr("y",function(d,i){
+		.attr("height", function(d){
+			return 0;
+		})
+		.transition()
+		.delay(function(d,i){
+			return i * 200;
+		})
+		.duration(2000)
+		.ease("bounce")
+		.attr("y",function(d){
 			return yScale(d);
 		})
-		.attr("width",xScale.rangeBand() - rectPadding)
-		.attr("height",function(d){
+		.attr("height", function(d){
 			return height - padding.top - padding.bottom - yScale(d);
 		});
 
-		var texts = svg.selectAll(".MyText")
-			.data(dataset)
-			.enter()
-			.append("text")
-			.attr("class","MyText")
-			.attr("transform","translate(" + padding.left + ","+padding.top+")")
-			.attr("x",function(d,i){
-				return xScale(i) + rectPadding/2;
-			})
-			.attr("y",function(d){
-				return yScale(d);
-			})
-			.attr("dx",function(){
-				return (xScale.rangeBand() - rectPadding)/2;
-			})
-			.attr("dy",function(d){
-				return 20;
-			})
-			.text(function(d){
-				return d;
-			})
+		//添加文字元素
+	var texts = svg.selectAll(".MyText")
+		.data(dataset)
+		.enter()
+		.append("text")
+		.attr("class","MyText")
+		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
+		.attr("x", function(d,i){
+			return xScale(i) + rectPadding/2;
+		} )
+		.attr("dx",function(){
+			return (xScale.rangeBand() - rectPadding)/2;
+		})
+		.attr("dy",function(d){
+			return 20;
+		})
+		.text(function(d){
+			return d;
+		})
+		.attr("y",function(d){
+			var min = yScale.domain()[0];
+			//var min = d3.max(dataset);  从上往下落
+			return yScale(min);
+		})
+		.transition()
+		.delay(function(d,i){
+			return i * 200;
+		})
+		.duration(2000)
+		.ease("bounce")
+		.attr("y",function(d){
+			return yScale(d);
+		});
 	
 	svg.append("g")
 		.attr("class","axis")
